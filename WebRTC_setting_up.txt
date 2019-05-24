@@ -1,0 +1,85 @@
+General WebRTC data channel connection between browsers:
+
+global vars:
+servers, localConnection, remoteConnection, sendChannel, receiveChannel
+
+CreatingConnection:
+winodw.localConnection = localConnection = new RTCPeerConnection(servers);
+
+//depending on the data, may need to set the param
+const dataChannelParams = {ordered: false};
+
+sendChannel = localConnection.createDataChannel('sendDataChannel', dataChannelParams); //sendDataChannel is just a label
+sendChannel.onopen = onSendChannelStateChange; //set event listener(a function that prepares for sending signals) for open 
+sendChannel.onclose = onSendChannelClosed; //... close(do sendChannel.close() in the function)
+
+localConnection.onicecandidate = e => {onIceCandidateEventListener(localConnection, e);};
+
+remoteConnection = new RTCPeerConnection(servers);
+
+remoteConnection.onicecandidate = e => {onIceCandidateEventListener(remoteConnection, e);};
+/*
+async function onIceCandidate(pc, event) {
+  const candidate = event.candidate;
+  if (candidate === null) {
+    return;
+  } // Ignore null candidates
+  try {
+    await getOtherPc(pc).addIceCandidate(candidate);//getOtherPC = get other peer connection
+  } catch (e) {
+    console.error('Failed to add Ice Candidate: ', e);
+  }
+}
+*/
+remoteConnection.ondatachannel = receiveChannelCallback; //function receiveChannelCallback(event)
+/*
+receiveChannelCallback(event) {
+	receiveChannel = event.channel;
+	receiveChannel.onclose = onReceiveChannelClosed;//xxx.close(), set it to null
+	receiveChannel.onmessage = onReceiveMessageCallback;//what to do after getting the message
+}
+*/
+
+localConnection.createOffer().then(
+	getDescription1,
+	onCreateSessionDescriptionError
+);
+
+/*
+function gotDescription1(desc) {
+  localConnection.setLocalDescription(desc);
+  console.log(`Offer from localConnection\n${desc.sdp}`);
+  remoteConnection.setRemoteDescription(desc);
+  remoteConnection.createAnswer().then(
+    gotDescription2,
+    onCreateSessionDescriptionError
+  );
+}
+*/
+
+try {
+    const localOffer = await localConnection.createOffer();//create offer creates a SDP(session description protocol)
+    await handleLocalDescription(localOffer); //passing SDP to local description handler
+  } catch (e) {
+    console.error('Failed to create session description: ', e);
+  }
+
+/*
+async function handleLocalDescription(desc) {
+  localConnection.setLocalDescription(desc);
+  remoteConnection.setRemoteDescription(desc);//assign same descripton to the other cp
+  try {
+    const remoteAnswer = await remoteConnection.createAnswer();//waiting for remote connection answers
+    handleRemoteAnswer(remoteAnswer);
+  } catch (e) {
+    console.error('Error when creating remote answer: ', e);
+  }
+}
+*/
+
+/*
+function handleRemoteAnswer(desc) {
+  remoteConnection.setLocalDescription(desc);
+  localConnection.setRemoteDescription(desc);
+}
+*/

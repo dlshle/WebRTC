@@ -1,0 +1,21 @@
+WebRTC stands for Web Real Time Communication. 
+It's an API developed by Google to support real time communication among browsers(Chrome, Firefox, Opera, etc.)
+
+WebRTC encapsules complex low-level API calls and is used in javascript. 
+
+WebRTC is for p2p communication. It supports text, video, audio, and data communication among peers.
+
+Main components of WebRTC:
+	MediaStreamAPI(getUserMedia) makes it easire for developers to acquire meida via camera or other media devices.
+	RTCPeerConnection is the component that handles stable and efficient communication of streaming data between peers.
+	RTCDataChannel enables p2p exchange of arbitary data with low latency and high throughput.
+
+ICE is a framework that allows WebRTC to overcome the complexities of real-world networking. Its ICEs job to find the best path to connect peers.
+A STUN server allows clients to discover their public IP address and the type of NAT they are behind. 
+A TURN server remains in the media path after the connection has been established. That is why the term relay is used to define TURN. A TURN server literally relays the media between the WebRTC peers.
+
+WebRTC official website: webrtc.org
+Articles on WebRTC: http://www8.cs.umu.se/education/examina/Rapporter/ChristerJakobsson.pdf
+Articles on STUN and TURN: https://www.avaya.com/blogs/archives/2014/08/understanding-webrtc-media-connections-ice-stun-and-turn.html
+
+Create a face-face video streaming platform: https://websitebeaver.com/insanely-simple-webrtc-video-chat-using-firebase-with-codepen-demo
