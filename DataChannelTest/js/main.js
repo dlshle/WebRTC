@@ -32,8 +32,6 @@ firebase.initializeApp(firebaseConfig);
 
 var db = firebase.database().ref();
 
-var displayMessage = document.getElementById("message");
-
 var pc = new RTCPeerConnection(servers);
 pc.onicecandidate = onIceCandidate;
 var dc = pc.createDataChannel("dataChannel");
@@ -51,6 +49,8 @@ function readMsg(data) {
     if (id != 0) {
         if (content.type == "ice") {
             readICECandidate(content.msg);
+        } else if (content.type == "offer") {
+            readOffer(content.msg);
         } else if (content.type == "answer") {
             readAnswer(content.msg);
         }
@@ -88,7 +88,7 @@ function onDataChannelClose() {
 function onDataChannelMessage(event) {
     console.log("Data channel received message:");
     console.log(event.data);
-    displayMessage.innerText = JSON.stringify(event.data);
+    document.getElementById("message").innerText = JSON.stringify(event.data);
     console.log(JSON.stringify(event.data));
 }
 
@@ -107,11 +107,10 @@ function readAnswer(answerSDP) {
 }
 
 function createOffer() {
-    pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => displayOffer());
+    pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => sendOffer());
 }
 
-function displayOffer() {
-    document.getElementById("sdp").innerText = JSON.stringify(pc.localDescription);
+function sendOffer() {
     //in the meantime, send offer
     var msg = db.push(JSON.stringify({id:0, content:{type:"offer", msg: pc.localDescription}}));
     msg.remove();

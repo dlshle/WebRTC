@@ -32,16 +32,21 @@ firebase.initializeApp(firebaseConfig);
 
 var db = firebase.database().ref();
 
-var displayMessage = document.getElementById("message");
 var id = Math.floor(Math.random() * 100000);
 var pc = new RTCPeerConnection(servers);
 pc.onicecandidate = onIceCandidate;
-var dc = pc.createDataChannel("dataChannel");
-dc.onopen = onDataChannelOpen;
-dc.onclose = onDataChannelClose;
-dc.onmessage = onDataChannelMessage;
+pc.ondatachannel = onDataChannelCallback;
+
+var dc;
 
 db.on('child_added', readMsg);
+
+function onDataChannelCallback(event) {
+    dc = event.channel;
+    dc.onopen = onDataChannelOpen;
+    dc.onclose = onDataChannelClose;
+    dc.onmessage = onDataChannelMessage;
+}
 
 function readMsg(data) {
     var id = JSON.parse(data.val()).id;
@@ -51,6 +56,8 @@ function readMsg(data) {
     if (id != 1) {
         if (content.type == "ice") {
             readICECandidate(content.msg);
+        } else if (content.type == "answer") {
+            readAnswer(content.msg);
         } else if (content.type == "offer") {
             readOffer(content.msg);
         }
@@ -86,7 +93,7 @@ function onDataChannelClose() {
 function onDataChannelMessage(event) {
     console.log("Data channel received message:");
     console.log(event.data);
-    displayMessage.innerText = event.data;
+    document.getElementById("message").innerText = event.data;
 }
 
 function readOffer(offerSDP) {
@@ -96,17 +103,11 @@ function readOffer(offerSDP) {
 }
 
 function generateAnswer(sdp) {
-    pc.setRemoteDescription(sdp).then(() => pc.createAnswer()).then(answer => pc.setLocalDescription(answer)).then(() => displayAnswer());
+    pc.setRemoteDescription(sdp).then(() => pc.createAnswer()).then(answer => pc.setLocalDescription(answer)).then(() => sendAnswer());
 }
 
-function displayAnswer() {
-    document.getElementById("answer").innerText = JSON.stringify(pc.localDescription);
+function sendAnswer() {
     console.log(JSON.stringify(pc.localDescription));
     var msg = db.push(JSON.stringify({id:1, content:{type:"answer", msg:pc.localDescription}}));
     msg.remove();
-}
-
-function addIceCandidate(strCandidate) {
-    var candidate = new RTCIceCandidate(JSON.parse(strCandidate));
-    pc.addIceCandidate(candidate).then(() => console.log("ice candidate added success"), err => console.log("error on adding ice candidate!\n", err));
 }

@@ -10,16 +10,9 @@
 <body>
 <button onclick="createOffer()">Establish Connection</button>
 <br>
-<div id="sdp">
-
-</div>
-<hr>
-<div id="ice">
-
-</div>
-<textarea id="message"></textarea>
+<input type="text" id="input">
 <br>
-<button onclick="transmitMessage(document.getElementById('message').value)" id="btnSendMsg">Send Message</button>
+<button onclick="transmitMessage(document.getElementById('input').value)" id="btnSendMsg">Send Message</button>
 <p id="status">none</p>
 </body>
 </html>
