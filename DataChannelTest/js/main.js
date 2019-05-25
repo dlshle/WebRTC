@@ -34,19 +34,25 @@ var db = firebase.database().ref();
 
 var pc = new RTCPeerConnection(servers);
 pc.onicecandidate = onIceCandidate;
-var dc = pc.createDataChannel("dataChannel");
-dc.onopen = onDataChannelOpen;
-dc.onclose = onDataChannelClose;
-dc.onmessage = onDataChannelMessage;
+pc.ondatachannel = onDataChannelCallback;
+var dc = null;
+var cid = Math.floor(Math.random() * 100000);
 
 db.on('child_added', readMsg);
+
+function onDataChannelCallback(event) {
+    dc = event.channel;
+    dc.onopen = onDataChannelOpen;
+    dc.onclose = onDataChannelClose;
+    dc.onmessage = onDataChannelMessage;
+}
 
 function readMsg(data) {
     var id = JSON.parse(data.val()).id;
     var content = JSON.parse(data.val()).content;
     console.log(id);
     console.log(content);
-    if (id != 0) {
+    if (id != cid) {
         if (content.type == "ice") {
             readICECandidate(content.msg);
         } else if (content.type == "offer") {
@@ -65,7 +71,7 @@ function readICECandidate(ice) {
 
 function onIceCandidate(event) {
     if (event.candidate) {
-		var data = JSON.stringify({id:0, content:{type:"ice", msg:event.candidate}});
+		var data = JSON.stringify({id:cid, content:{type:"ice", msg:event.candidate}});
         var msg = db.push(data);
         msg.remove();
     }
@@ -107,11 +113,36 @@ function readAnswer(answerSDP) {
 }
 
 function createOffer() {
+	createDataChannel();
     pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => sendOffer());
+}
+
+function createDataChannel() {
+	dc = pc.createDataChannel("DataChannel"); 
+	dc.onopen = onDataChannelOpen;
+	dc.onclose = onDataChannelClose;
+	dc.onmessage = onDataChannelMessage;
 }
 
 function sendOffer() {
     //in the meantime, send offer
-    var msg = db.push(JSON.stringify({id:0, content:{type:"offer", msg: pc.localDescription}}));
+    var msg = db.push(JSON.stringify({id:cid, content:{type:"offer", msg: pc.localDescription}}));
+    msg.remove();
+}
+
+
+function readOffer(offerSDP) {
+    console.log("reading offer:");
+    console.log(offerSDP);
+    generateAnswer(offerSDP);
+}
+
+function generateAnswer(sdp) {
+    pc.setRemoteDescription(sdp).then(() => pc.createAnswer()).then(answer => pc.setLocalDescription(answer)).then(() => sendAnswer());
+}
+
+function sendAnswer() {
+    console.log(JSON.stringify(pc.localDescription));
+    var msg = db.push(JSON.stringify({id:cid, content:{type:"answer", msg:pc.localDescription}}));
     msg.remove();
 }
