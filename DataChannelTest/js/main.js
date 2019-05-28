@@ -35,10 +35,16 @@ var db = firebase.database().ref();
 var pc = new RTCPeerConnection(servers);
 pc.onicecandidate = onIceCandidate;
 pc.ondatachannel = onDataChannelCallback;
+pc.onicegatheringstatechange = onIceGatheringStateChange;
 var dc = null;
 var cid = Math.floor(Math.random() * 100000);
 
 db.on('child_added', readMsg);
+
+function onIceGatheringStateChange() {
+    console.log("Ice gathering state changed:" + pc.iceGatheringState);
+    document.getElementById("ice").innerText = pc.iceGatheringState;
+}
 
 function onDataChannelCallback(event) {
     dc = event.channel;
@@ -79,7 +85,7 @@ function onIceCandidate(event) {
 
 function onDataChannelOpen() {
     console.log("Data channel opened.");
-    document.getElementById("btnSendMsg").disabled = false;
+    document.getElementById("estConn").disabled = true;
     document.getElementById("status").innerText = "open";
 }
 
