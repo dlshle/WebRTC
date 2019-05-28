@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="20c079e2-8072-4d71-8331-6765d4adbd52" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/js/Schema.fbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/js/Schema_generated.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/js/buffer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/js/flatbuffers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
-    </list>
+    <list default="true" id="20c079e2-8072-4d71-8331-6765d4adbd52" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -20,7 +12,17 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="23" column="68" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -156,11 +158,12 @@
       <workItem from="1559061276498" duration="1767000" />
       <workItem from="1559066868164" duration="2595000" />
       <workItem from="1559070945119" duration="3694000" />
+      <workItem from="1559076806480" duration="214000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33009000" />
+    <option name="totallyTimeSpent" value="33223000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1176" extended-state="6" />
@@ -208,13 +211,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" column="54" selection-start-line="33" selection-start-column="54" selection-end-line="33" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/buffer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -226,6 +222,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="44" selection-start-column="44" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="68" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
         </state>
       </provider>
     </entry>
