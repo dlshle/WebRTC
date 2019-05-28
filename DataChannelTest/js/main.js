@@ -1,3 +1,4 @@
+var builder = new flatbuffers.Builder(1024);
 var servers = {
     "v": {
         "iceServers": {
@@ -100,7 +101,8 @@ function onDataChannelClose() {
 function onDataChannelMessage(event) {
     console.log("Data channel received message:");
     console.log(event.data);
-    document.getElementById("message").innerText = JSON.stringify(event.data);
+    //need to parse the message here
+    convertToObject(event.data);
     console.log(JSON.stringify(event.data));
 }
 

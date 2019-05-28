@@ -3,19 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title>WebRTC Data Channel Test</title>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+    <script src="./js/flatbuffers.js"></script>
+    <script src="./js/Schema_generated.js"></script>
     <script src="./js/main.js"></script>
+    <script>
+        function sendMessage() {
+            var msgType = document.getElementById("msgType").value;
+            var inputBytesArr = document.getElementById("data").value.split(",");
+            var inputBytes = [];
+            var time = new Date().getMilliseconds();
+            for (var i = 0; i < inputBytesArr.length; i++) {
+                inputBytes.push(parseInt(inputBytesArr[i]));
+            }
+            var body = RemoteSupport.Test.Message.createBodyVector(builder, inputBytes);
+            RemoteSupport.Test.Message.startMessage(builder);
+            RemoteSupport.Test.Message.addMessageType(builder, (msgType === "Text"?RemoteSupport.Test.messageType.Text:RemoteSupport.Test.messageType.Stream));
+            RemoteSupport.Test.Message.addTimeStamp(builder, time);
+            RemoteSupport.Test.Message.addBody(builder, body);
+            var msg = RemoteSupport.Test.Message.endMessage(builder);
+            builder.finish(msg);
+            var data = builder.asUint8Array();
+            console.log("generated data:");
+            console.log(data);
+            transmitMessage(data);
+        }
+
+        function convertToObject(data) {
+            var buffer = new Uint8Array(data);
+            var buf = new flatbuffers.ByteBuffer(buffer);
+            var MSG = RemoteSupport.Test.Message.getRootAsMessage(buf);
+            var msg = "";
+            msg += MSG.MessageType() + "\n";
+            msg += MSG.TimeStamp() + "ms\n";
+            for (var i = 0; i < MSG.BodyLength(); i++) {
+                msg += MSG.Body(i) + " ";
+            }
+            document.getElementById("message").innerText = msg;
+        }
+    </script>
 </head>
 <body>
 <button onclick="createOffer()" id="estConn">Establish Connection</button>
+<hr>
+<div>
+    data creation:
+    <br>
+    MessageType:
+    <select id="msgType">
+        <option value="Text">Text</option>
+        <option value="Stream">Stream</option>
+    </select>
+    <br>
+    Byte Stream(seperate bytes by comma):
+    <input type="text" id="data">
+</div>
 <br>
 <input type="text" id="input">
 <br>
-<button onclick="transmitMessage(document.getElementById('input').value)" id="btnSendMsg">Send Message</button>
+<button onclick="sendMessage(document.getElementById('input').value)" id="btnSendMsg">Send Message</button>
 <br>
-message received:
-<br>
+"Message" received: <br>
 <div id="message">
 </div>
 <p>Ice status:</p>

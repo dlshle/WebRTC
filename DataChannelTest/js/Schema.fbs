@@ -1,0 +1,11 @@
+namespace RemoteSupport.Test;
+
+enum messageType : byte {Text, Stream}
+
+table Message {
+    MessageType: messageType;
+    TimeStamp:uint;
+    Body:[byte];
+}
+
+root_type Message;
