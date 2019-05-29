@@ -29,17 +29,36 @@
             transmitMessage(data);
         }
 
-        function convertToObject(data) {
-            var buffer = new Uint8Array(data);
-            var buf = new flatbuffers.ByteBuffer(buffer);
-            var MSG = RemoteSupport.Test.Message.getRootAsMessage(buf);
-            var msg = "";
-            msg += MSG.MessageType() + "\n";
-            msg += MSG.TimeStamp() + "ms\n";
-            for (var i = 0; i < MSG.BodyLength(); i++) {
-                msg += MSG.Body(i) + " ";
-            }
-            document.getElementById("message").innerText = msg;
+	function convertToObject(data) {
+			if (data.constructor.name === "Blob") {
+					var reader = new FileReader();
+					reader.addEventListener("loadend", function() {
+						console.log(reader.result);
+						data = reader.result;
+						var buffer = new Uint8Array(data);
+						var buf = new flatbuffers.ByteBuffer(buffer);
+						var MSG = RemoteSupport.Test.Message.getRootAsMessage(buf);
+						var msg = "";
+						msg += (MSG.MessageType() === 0?"Text":"Stream") + "\n";
+						msg += MSG.TimeStamp() + "ms\n";
+						for (var i = 0; i < MSG.BodyLength(); i++) {
+							msg += MSG.Body(i) + " ";
+						}
+						document.getElementById("message").innerText = msg;
+					});
+					reader.readAsArrayBuffer(data);
+			} else {
+					var buffer = new Uint8Array(data);
+					var buf = new flatbuffers.ByteBuffer(buffer);
+					var MSG = RemoteSupport.Test.Message.getRootAsMessage(buf);
+					var msg = "";
+					msg += (MSG.MessageType() === 0?"Text":"Stream") + "\n";
+					msg += MSG.TimeStamp() + "ms\n";
+					for (var i = 0; i < MSG.BodyLength(); i++) {
+						msg += MSG.Body(i) + " ";
+					}
+					document.getElementById("message").innerText = msg;
+			}
         }
     </script>
 </head>
