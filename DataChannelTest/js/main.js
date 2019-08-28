@@ -73,12 +73,15 @@ function readMsg(data) {
 function readICECandidate(ice) {
     console.log("accessing ice:");
     console.log(ice);
-    pc.addIceCandidate(new RTCIceCandidate(ice)).then(() => console.log("ice candidate added successfully"), () => console.log("error on adding ice candidate"));
+    pc.addIceCandidate(new RTCIceCandidate(ice)).then(
+	() => console.log("ice candidate added successfully"), 
+	() => console.log("error on adding ice candidate"));
 }
 
 function onIceCandidate(event) {
     if (event.candidate) {
-		var data = JSON.stringify({id:cid, content:{type:"ice", msg:event.candidate}});
+	var data = JSON.stringify(
+		{id:cid, content:{type:"ice", msg:event.candidate}});
         var msg = db.push(data);
         msg.remove();
     }
@@ -122,7 +125,8 @@ function readAnswer(answerSDP) {
 
 function createOffer() {
 	createDataChannel();
-    pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => sendOffer());
+	pc.createOffer().then(offer => pc.setLocalDescription(offer))
+		.then(() => sendOffer());
 }
 
 function createDataChannel() {
@@ -146,7 +150,9 @@ function readOffer(offerSDP) {
 }
 
 function generateAnswer(sdp) {
-    pc.setRemoteDescription(sdp).then(() => pc.createAnswer()).then(answer => pc.setLocalDescription(answer)).then(() => sendAnswer());
+    pc.setRemoteDescription(sdp).then(() => pc.createAnswer())
+	.then(answer => pc.setLocalDescription(answer))
+	.then(() => sendAnswer());
 }
 
 function sendAnswer() {
